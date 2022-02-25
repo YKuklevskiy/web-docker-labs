@@ -1,5 +1,7 @@
 <?php
 header('Content-type: text/html; charset=utf-8');
+
+echo "<h2>";
 $text = utf8_decode($_POST['p1']);
 
 $textLength = strlen($text);
@@ -10,7 +12,9 @@ $wordCount = preg_match_all($word_rgx, $text, $match_arr);
 
 $err = preg_last_error();
 if($err == 0) // just in case
-    echo "Количество слов: $wordCount<br>Количество символов: $textLength";
+    echo "Word count: $wordCount<br>Character count: $textLength";
 else
     echo "Parse error. Error ID: $err";
+
+echo "</h2>";
 ?>

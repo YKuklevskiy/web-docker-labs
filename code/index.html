@@ -1,18 +1,46 @@
 <!--
-Дан textarea и кнопка. В textarea вводится текст. По
+1. Дан textarea и кнопка. В textarea вводится текст. По
 нажатию на кнопку выведите количество слов и количество
 символов в тексте.
+
+2. На одной странице с помощью формы спросите у
+пользователя фамилию, имя и возраст. Запишите эти данные
+в сессию. При заходе на другую страницу выведите эти
+данные на экран.
 -->
 
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Textarea</title>
+        <title>Task 2</title>
     </head>
     <body>
+        <h2>Subtask 1</h2>
         <form action="lab3/sessions_and_cookies_p1.php" method="post">
-            <textarea name="p1" id="0" cols="30" rows="10" placeholder="English text goes here..."></textarea>
+            <textarea name="p1" cols="30" rows="10" placeholder="English text goes here..."></textarea>
+            <br>
             <button>Submit text</button>
         </form>
+
+        <br>
+
+        <h2>Subtask 2</h2>
+        <form id="form2" action="lab3/sessions_and_cookies_p2.php" method="post">
+            <p>
+                Name: <input name="name" type="text" size="18">
+            </p>
+            <p>
+                Surname: <input name="surname" type="text" size="18">
+            </p>
+            <p>
+                Age: <input name="age" type="number" min="0" size="18">
+            </p>
+            <input name="rewrite" type="checkbox" checked><label>Rewrite old user data</label>
+            <button>Submit and check</button>
+        </form>
+
+        <br>
+
+        <h2>Subtask 3</h2>
     </body>
 </html>
