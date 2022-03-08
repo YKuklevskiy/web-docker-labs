@@ -1,5 +1,4 @@
 <?php 
-require_once("ad_data.php");
 require_once "../vendor/autoload.php";
 
 if($_POST["email"] != "" && $_POST["category"] != "" && $_POST["header"] != "" && $_POST["ad"] != "")

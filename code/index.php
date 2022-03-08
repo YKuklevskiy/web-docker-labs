@@ -26,7 +26,6 @@ email, текст объявления, заголовок объявления 
 -->
 
 <?php
-require_once("lab3/ad_data.php");
 require_once "vendor/autoload.php";
 
 $available_categories = ["Продажа", "Реклама", "Купля"];
