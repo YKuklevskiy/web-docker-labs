@@ -1,18 +1,26 @@
 <?php 
 require_once("ad_data.php");
+require_once "../vendor/autoload.php";
 
 if($_POST["email"] != "" && $_POST["category"] != "" && $_POST["header"] != "" && $_POST["ad"] != "")
 {
-    $email = $_POST["email"];
-    $category = $_POST["category"];
-    $header = $_POST["header"];
-    $text = $_POST["ad"];
-    
-    $adFile = fopen('adCategories/' . $category . '/' . $header . '.txt', 'w');
+    $client = new Google_Client();
+    $client->setApplicationName('Google Sheets API Implementation');
+    $client->setScopes(Google_Service_Sheets::SPREADSHEETS);
+    $client->setAuthConfig('../credentials.json');
+    $client->setAccessType('offline');
+    $client->setPrompt('select_account consent');
 
-    $data = new AdData($email, $header, $text);
-    fwrite($adFile, serialize($data));
-    fclose($adFile);
+    $service = new Google_Service_Sheets($client);
+    $spreadsheetId = "1iQNHHfw_hlXLRC7V-L01yqDx9zp6vDFZfshnbhcO7HQ";
+
+    $val_range = "AdInfoSheet!A:D";
+    $values = [[
+        $_POST["category"], $_POST["email"], $_POST["header"], $_POST["ad"]
+    ]];
+    $body = new Google_Service_Sheets_ValueRange(['values' => $values]);
+    $params = ['valueInputOption' => 'RAW'];
+    $append_sheet = $service->spreadsheets_values->append($spreadsheetId, $val_range, $body, $params);
 }
 
 header('Location: ../index.php');

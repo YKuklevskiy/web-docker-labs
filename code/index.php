@@ -17,11 +17,20 @@ email, текст объявления, заголовок объявления 
     необходимо создать новый текстовый файл
     категория/заголовок_объявления.txt, содержимое
     файла - Текст объявления.
+
+Лабораторная 4:
+Настроить интеграцию с google таблицами.
+Записывать и считывать объявления из л.р. “Регулярные
+выражения и работа с файлами” в google таблицу вместо
+файлов.
 -->
 
 <?php
 require_once("lab3/ad_data.php");
 require_once "vendor/autoload.php";
+
+$available_categories = ["Продажа", "Реклама", "Купля"];
+sort($available_categories);
 
 $client = new Google_Client();
 $client->setApplicationName('Google Sheets API Implementation');
@@ -32,43 +41,11 @@ $client->setPrompt('select_account consent');
 
 $service = new Google_Service_Sheets($client);
 $spreadsheetId = "1iQNHHfw_hlXLRC7V-L01yqDx9zp6vDFZfshnbhcO7HQ";
-$get_range = "Sheet1!A1:A10";
 
-$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
-$values = $response->getValues();
-
-var_dump($values);
-
-/*
-СТАРЫЙ КОД
-$categoriesFolder = opendir("lab3/adCategories");
-
-//Массив из массивов AdData по ключу-категории
-$adArr = array();
-while ($category = readdir($categoriesFolder)) {
-    if (is_dir('lab3/adCategories/' . $category) && !($category=='.' || $category=='..')) {
-        $adArr[$category] = [];
-    }
-}
-
-//Добавили все категории как ключи. Теперь проходимся по категориям и заполняем их массивами с AdData
-foreach ($adArr as $category => $value) {
-    $curDir = opendir("lab3/adCategories/" . $category);
-    while ($fileName = readdir($curDir)) { // заполняем категорию данными
-        if ($fileName == '.' || $fileName == '..') 
-            continue;
-        
-        $filePath = "lab3/adCategories/" . $category . '/' . $fileName;
-        $file = file_get_contents($filePath);
-        $curAdData = unserialize($file);
-        array_push($adArr[$category], $curAdData); 
-        
-        // Очень пока что непонятно работают ссылки. Когда я пытался сделать в цикле &$value вместо , 
-        // второй массив (вторая категория), работал непонятно - в массив adArr он заносился как ссылка, 
-        // хотя я вовсе не делал его ссылкой.
-    }
-}
-*/
+// Категория-Email-Заголовок-Текст
+$response = $service->spreadsheets_values->get($spreadsheetId, "AdInfoSheet!A1:D");
+$value_table = $response->getValues();
+asort($value_table);
 ?>
 
 <html>
@@ -85,7 +62,7 @@ foreach ($adArr as $category => $value) {
             <label>Введите категорию объявления:</label>
             <select name="category">
             <?php
-            foreach ($adArr as $category => $value) {
+            foreach ($available_categories as $category) {
                 echo "<option>" . $category . "</option>";
             }
             ?>
@@ -108,18 +85,13 @@ foreach ($adArr as $category => $value) {
             <th>Текст</th>
         </tr>
         <?php
-        foreach ($adArr as $category => $adsData) {
-            foreach ($adsData as $ad) {
-                echo "<tr>";
-                echo "<td>" . $category . "</td>";
-
-                $data = $ad->getAdInfo();
-
-                echo "<td>" . $data['email'] . "</td>";
-                echo "<td>" . $data['header'] . "</td>";
-                echo "<td>" . $data['text'] . "</td>";
-                echo "</tr>";
-            }
+        foreach ($value_table as $adData) {
+            echo "<tr>";
+            echo "<td>" . $adData[0] . "</td>"; // Категория
+            echo "<td>" . $adData[1] . "</td>"; // Почта
+            echo "<td>" . $adData[2] . "</td>"; // Заголовок
+            echo "<td>" . $adData[3] . "</td>"; // Объявление
+            echo "</tr>";
         }
         ?>
         </table>
