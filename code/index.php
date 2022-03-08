@@ -21,6 +21,26 @@ email, текст объявления, заголовок объявления 
 
 <?php
 require_once("lab3/ad_data.php");
+require_once "vendor/autoload.php";
+
+$client = new Google_Client();
+$client->setApplicationName('Google Sheets API Implementation');
+$client->setScopes(Google_Service_Sheets::SPREADSHEETS_READONLY);
+$client->setAuthConfig('credentials.json');
+$client->setAccessType('offline');
+$client->setPrompt('select_account consent');
+
+$service = new Google_Service_Sheets($client);
+$spreadsheetId = "1iQNHHfw_hlXLRC7V-L01yqDx9zp6vDFZfshnbhcO7HQ";
+$get_range = "Sheet1!A1:A10";
+
+$response = $service->spreadsheets_values->get($spreadsheetId, $get_range);
+$values = $response->getValues();
+
+var_dump($values);
+
+/*
+СТАРЫЙ КОД
 $categoriesFolder = opendir("lab3/adCategories");
 
 //Массив из массивов AdData по ключу-категории
@@ -48,6 +68,7 @@ foreach ($adArr as $category => $value) {
         // хотя я вовсе не делал его ссылкой.
     }
 }
+*/
 ?>
 
 <html>
